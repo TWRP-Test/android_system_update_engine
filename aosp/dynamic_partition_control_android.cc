@@ -219,7 +219,8 @@ bool DynamicPartitionControlAndroid::MapPartitionInternal(
       .device_name = device_name};
   bool success = false;
   if (GetVirtualAbFeatureFlag().IsEnabled() && target_supports_snapshot_ &&
-      slot != source_slot_ && force_writable && ExpectMetadataMounted()) {
+      slot != source_slot_ && force_writable && ExpectMetadataMounted() && 
+      access(path->c_str(), F_OK) == 0) {
     // Only target partitions are mapped with force_writable. On Virtual
     // A/B devices, target partitions may overlap with source partitions, so
     // they must be mapped with snapshot.
@@ -1113,13 +1114,16 @@ bool DynamicPartitionControlAndroid::UpdatePartitionMetadata(
       uint64_t partition_size = partition_sizes_it->second;
 
       auto partition_name_suffix = partition_name + target_suffix;
-      Partition* p = builder->AddPartition(
-          partition_name_suffix, group_name_suffix, LP_PARTITION_ATTR_READONLY);
+      Partition* p = builder->FindPartition(partition_name_suffix);
       if (!p) {
-        LOG(ERROR) << "Cannot add partition " << partition_name_suffix
-                   << " to group " << group_name_suffix;
-        return false;
+        p = builder->AddPartition(partition_name_suffix, group_name_suffix, LP_PARTITION_ATTR_READONLY);
+        if (!p) {
+          LOG(ERROR) << "Cannot add partition " << partition_name_suffix
+                     << " to group " << group_name_suffix;
+          return false;
+        }
       }
+
       if (!builder->ResizePartition(p, partition_size)) {
         LOG(ERROR) << "Cannot resize partition " << partition_name_suffix
                    << " to size " << partition_size << ". Not enough space?";

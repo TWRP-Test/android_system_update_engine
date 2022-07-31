@@ -253,6 +253,7 @@ void CleanupPreviousUpdateAction::StartMerge() {
     return;
   }
 
+  /*
   if (kIsRecovery) {
     auto snapshots_created =
         snapshot_->RecoveryCreateSnapshotDevices(metadata_device_);
@@ -282,6 +283,7 @@ void CleanupPreviousUpdateAction::StartMerge() {
       }
     }
   }
+  */
 
   if (!merge_stats_->Start()) {
     // Not an error because CleanupPreviousUpdateAction may be paused and
