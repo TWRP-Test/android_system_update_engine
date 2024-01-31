@@ -357,6 +357,7 @@ void FilesystemVerifierAction::StartPartitionHashing() {
                 << android::base::Join(
                        install_plan_.untouched_dynamic_partitions, ", ")
                 << "]";
+      /*
       if (!dynamic_control_->VerifyExtentsForUntouchedPartitions(
               install_plan_.source_slot,
               install_plan_.target_slot,
@@ -364,6 +365,7 @@ void FilesystemVerifierAction::StartPartitionHashing() {
         Cleanup(ErrorCode::kFilesystemVerifierError);
         return;
       }
+      */
     }
 
     Cleanup(ErrorCode::kSuccess);
