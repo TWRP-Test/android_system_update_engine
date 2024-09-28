@@ -112,7 +112,7 @@ void FilesystemVerifierAction::PerformAction() {
   std::partial_sum(partition_weight_.begin(),
                    partition_weight_.end(),
                    partition_weight_.begin(),
-                   std::plus<size_t>());
+                   std::plus<uint64_t>());
 
   install_plan_.Dump();
   // If we are not writing verity, just map all partitions once at the
