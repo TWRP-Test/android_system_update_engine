@@ -503,6 +503,29 @@ cc_defaults {
     ],
 }
 
+aidl_interface {
+    name: "libupdate_engine_aidl_interface",
+    srcs: [
+        ":libupdate_engine_aidl",
+    ],
+    backend: {
+        cpp: {
+            enabled: false,
+        },
+        java: {
+            enabled: false,
+        },
+        ndk: {
+            enabled: false,
+        },
+        rust: {
+            enabled: true,
+        },
+    },
+    frozen: false,
+    unstable: true,
+}
+
 cc_defaults {
     name: "libupdate_engine_android_defaults",
     defaults: [
