@@ -22,8 +22,6 @@
 #include <map>
 #include <utility>
 
-#include <base/strings/stringprintf.h>
-
 #include "update_engine/common/hash_calculator.h"
 #include "update_engine/common/utils.h"
 #include "update_engine/payload_consumer/file_writer.h"
