@@ -20,7 +20,7 @@
 #include <string>
 #include <string_view>
 
-#include <base/macros.h>
+#include <android-base/macros.h>
 #include <base/time/time.h>
 
 #include "update_engine/common/error_code.h"

@@ -83,7 +83,7 @@ int LibcurlHttpFetcher::LibcurlCloseSocketCallback(void* clientp,
 
   LibcurlHttpFetcher* fetcher = static_cast<LibcurlHttpFetcher*>(clientp);
   // Stop watching the socket before closing it.
-  for (size_t t = 0; t < base::size(fetcher->fd_controller_maps_); ++t) {
+  for (size_t t = 0; t < std::size(fetcher->fd_controller_maps_); ++t) {
     fetcher->fd_controller_maps_[t].erase(item);
   }
 
@@ -683,7 +683,7 @@ void LibcurlHttpFetcher::SetupMessageLoopSources() {
 
   // We should iterate through all file descriptors up to libcurl's fd_max or
   // the highest one we're tracking, whichever is larger.
-  for (size_t t = 0; t < base::size(fd_controller_maps_); ++t) {
+  for (size_t t = 0; t < std::size(fd_controller_maps_); ++t) {
     if (!fd_controller_maps_[t].empty())
       fd_max = max(fd_max, fd_controller_maps_[t].rbegin()->first);
   }
@@ -701,7 +701,7 @@ void LibcurlHttpFetcher::SetupMessageLoopSources() {
         is_exc || (FD_ISSET(fd, &fd_write) != 0)  // track 1 -- write
     };
 
-    for (size_t t = 0; t < base::size(fd_controller_maps_); ++t) {
+    for (size_t t = 0; t < std::size(fd_controller_maps_); ++t) {
       bool tracked =
           fd_controller_maps_[t].find(fd) != fd_controller_maps_[t].end();
 
@@ -782,7 +782,7 @@ void LibcurlHttpFetcher::CleanUp() {
   MessageLoop::current()->CancelTask(timeout_id_);
   timeout_id_ = MessageLoop::kTaskIdNull;
 
-  for (size_t t = 0; t < base::size(fd_controller_maps_); ++t) {
+  for (size_t t = 0; t < std::size(fd_controller_maps_); ++t) {
     fd_controller_maps_[t].clear();
   }
 

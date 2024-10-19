@@ -18,11 +18,12 @@
 
 #include <inttypes.h>
 
+#include <set>
 #include <string>
 #include <vector>
 
 #include <base/logging.h>
-#include <base/macros.h>
+#include <android-base/macros.h>
 #include <base/strings/stringprintf.h>
 
 #include "update_engine/payload_consumer/payload_constants.h"

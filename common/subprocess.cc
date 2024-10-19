@@ -30,7 +30,6 @@
 #include <base/bind.h>
 #include <base/logging.h>
 #include <base/posix/eintr_wrapper.h>
-#include <base/stl_util.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
 #include <brillo/secure_blob.h>
@@ -128,7 +127,7 @@ void Subprocess::OnStdoutReady(SubprocessRecord* record) {
     bytes_read = 0;
     bool eof;
     bool ok = utils::ReadAll(
-        record->stdout_fd, buf, base::size(buf), &bytes_read, &eof);
+        record->stdout_fd, buf, std::size(buf), &bytes_read, &eof);
     record->stdout_str.append(buf, bytes_read);
     if (!ok || eof) {
       // There was either an error or an EOF condition, so we are done watching

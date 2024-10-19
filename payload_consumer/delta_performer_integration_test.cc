@@ -20,12 +20,12 @@
 #include <sys/mount.h>
 
 #include <algorithm>
+#include <list>
 #include <string>
 #include <vector>
 
 #include <base/files/file_path.h>
 #include <base/files/file_util.h>
-#include <base/stl_util.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
 #include <gmock/gmock-matchers.h>
@@ -914,7 +914,7 @@ void VerifyPayloadResult(DeltaPerformer* performer,
   brillo::Blob updated_kernel_partition;
   ASSERT_TRUE(
       utils::ReadFile(state->result_kernel->path(), &updated_kernel_partition));
-  ASSERT_GE(updated_kernel_partition.size(), base::size(kNewData));
+  ASSERT_GE(updated_kernel_partition.size(), std::size(kNewData));
   ASSERT_TRUE(std::equal(std::begin(kNewData),
                          std::end(kNewData),
                          updated_kernel_partition.begin()));
