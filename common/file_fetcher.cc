@@ -24,7 +24,7 @@
 #include <base/location.h>
 #include <base/logging.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 #include <brillo/streams/file_stream.h>
 
 #include "update_engine/common/hardware_interface.h"

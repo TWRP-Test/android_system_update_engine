@@ -25,12 +25,12 @@
 #include <string>
 #include <vector>
 
+#include <android-base/parseint.h>
 #include <base/files/file_path.h>
 #include <base/files/file_util.h>
 #include <base/files/scoped_temp_dir.h>
-#include <base/strings/string_number_conversions.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 #include <brillo/secure_blob.h>
 #include <gmock/gmock.h>
 #include <google/protobuf/repeated_field.h>
@@ -1078,7 +1078,8 @@ TEST(DISABLED_ConfVersionTest, ConfVersionsMatch) {
   string major_version_str;
   uint64_t major_version{};
   EXPECT_TRUE(store.GetString("PAYLOAD_MAJOR_VERSION", &major_version_str));
-  EXPECT_TRUE(base::StringToUint64(major_version_str, &major_version));
+  EXPECT_TRUE(
+      android::base::ParseUint<uint64_t>(major_version_str, &major_version));
   EXPECT_EQ(kMaxSupportedMajorPayloadVersion, major_version);
 }
 

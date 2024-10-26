@@ -147,7 +147,8 @@ bool ABGenerator::SplitSourceCopy(const AnnotatedOperation& original_aop,
 
     AnnotatedOperation new_aop;
     new_aop.op = new_op;
-    new_aop.name = android::base::StringPrintf("%s:%d", original_aop.name.c_str(), i);
+    new_aop.name =
+        android::base::StringPrintf("%s:%d", original_aop.name.c_str(), i);
     result_aops->push_back(new_aop);
   }
   if (curr_src_ext_index != original_op.src_extents().size() - 1) {
@@ -183,7 +184,8 @@ bool ABGenerator::SplitAReplaceOp(const PayloadVersion& version,
 
     AnnotatedOperation new_aop;
     new_aop.op = new_op;
-    new_aop.name = android::base::StringPrintf("%s:%d", original_aop.name.c_str(), i);
+    new_aop.name =
+        android::base::StringPrintf("%s:%d", original_aop.name.c_str(), i);
     TEST_AND_RETURN_FALSE(
         AddDataAndSetType(&new_aop, version, target_part_path, blob_file));
 

@@ -23,7 +23,6 @@
 // GET a url.
 
 #include <err.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <netinet/in.h>
@@ -36,7 +35,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -44,7 +42,7 @@
 #include <base/posix/eintr_wrapper.h>
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 
 #include "update_engine/common/http_common.h"
 
@@ -130,15 +128,15 @@ bool ParseRequest(int fd, HttpRequest* request) {
       if (range.find('-') < range.length() - 1)
         request->end_offset = atoll(range.c_str() + range.find('-') + 1) + 1;
       request->return_code = kHttpResponsePartialContent;
-      string tmp_str = base::StringPrintf(
+      string tmp_str = android::base::StringPrintf(
           "decoded range offsets: "
           "start=%jd end=",
           (intmax_t)request->start_offset);
       if (request->end_offset > 0)
-        base::StringAppendF(
+        android::base::StringAppendF(
             &tmp_str, "%jd (non-inclusive)", (intmax_t)request->end_offset);
       else
-        base::StringAppendF(&tmp_str, "unspecified");
+        android::base::StringAppendF(&tmp_str, "unspecified");
       LOG(INFO) << tmp_str;
     } else if (terms[0] == "Host:") {
       CHECK_EQ(terms.size(), static_cast<vector<string>::size_type>(2));
@@ -642,7 +640,8 @@ int main(int argc, char** argv) {
   // unit tests, avoid unilateral changes; (b) it is necessary to flush/sync the
   // file to prevent the spawning process from waiting indefinitely for this
   // message.
-  string listening_msg = base::StringPrintf("%s%hu", kListeningMsgPrefix, port);
+  string listening_msg =
+      android::base::StringPrintf("%s%hu", kListeningMsgPrefix, port);
   LOG(INFO) << listening_msg;
   CHECK_EQ(write(report_fd, listening_msg.c_str(), listening_msg.length()),
            static_cast<int>(listening_msg.length()));

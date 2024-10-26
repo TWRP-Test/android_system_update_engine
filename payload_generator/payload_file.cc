@@ -18,9 +18,10 @@
 
 #include <endian.h>
 
-#include <algorithm>
 #include <map>
 #include <utility>
+
+#include <android-base/stringprintf.h>
 
 #include "update_engine/common/hash_calculator.h"
 #include "update_engine/common/utils.h"

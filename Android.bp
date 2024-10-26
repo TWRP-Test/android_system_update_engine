@@ -80,6 +80,9 @@ cc_defaults {
             cflags: [
                 "-DUSE_FEC=1",
             ],
+            shared_libs: [
+                "libbase",
+            ],
         },
         host: {
             cflags: [

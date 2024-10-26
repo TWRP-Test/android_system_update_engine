@@ -23,7 +23,7 @@
 #include <base/logging.h>
 #include <base/strings/string_number_conversions.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 
 #include "update_engine/common/utils.h"
 #include "update_engine/update_metadata.pb.h"
@@ -109,12 +109,12 @@ string InstallPlan::ToString() const {
     result_str.emplace_back(VectorToString(
         {
             {"Partition", partition.name},
-            {"source_size", base::NumberToString(partition.source_size)},
+            {"source_size", std::format("{}", partition.source_size)},
             {"source_path", partition.source_path},
             {"source_hash",
              base::HexEncode(partition.source_hash.data(),
                              partition.source_hash.size())},
-            {"target_size", base::NumberToString(partition.target_size)},
+            {"target_size", std::format("{}", partition.target_size)},
             {"target_path", partition.target_path},
             {"target_hash",
              base::HexEncode(partition.target_hash.data(),
@@ -131,10 +131,10 @@ string InstallPlan::ToString() const {
     const auto& payload = payloads[i];
     result_str.emplace_back(VectorToString(
         {
-            {"Payload", base::NumberToString(i)},
+            {"Payload", std::format("{}", i)},
             {"urls", PayloadUrlsToString(payload.payload_urls)},
-            {"size", base::NumberToString(payload.size)},
-            {"metadata_size", base::NumberToString(payload.metadata_size)},
+            {"size", std::format("{}", payload.size)},
+            {"metadata_size", std::format("{}", payload.metadata_size)},
             {"metadata_signature", payload.metadata_signature},
             {"hash", base::HexEncode(payload.hash.data(), payload.hash.size())},
             {"type", InstallPayloadTypeToString(payload.type)},

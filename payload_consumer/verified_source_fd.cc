@@ -24,7 +24,7 @@
 
 #include <base/strings/string_number_conversions.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 
 #include "update_engine/common/error_code.h"
 #include "update_engine/common/hash_calculator.h"

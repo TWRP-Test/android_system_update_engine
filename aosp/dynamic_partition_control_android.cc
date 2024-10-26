@@ -32,7 +32,7 @@
 #include <base/files/file_util.h>
 #include <base/logging.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
+#include <android-base/stringprintf.h>
 #include <bootloader_message/bootloader_message.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
@@ -57,6 +57,7 @@
 using android::base::GetBoolProperty;
 using android::base::GetProperty;
 using android::base::Join;
+using android::base::StringPrintf;
 using android::dm::DeviceMapper;
 using android::dm::DmDeviceState;
 using android::fs_mgr::CreateLogicalPartition;
@@ -72,7 +73,6 @@ using android::snapshot::Return;
 using android::snapshot::SnapshotManager;
 using android::snapshot::SnapshotManagerStub;
 using android::snapshot::UpdateState;
-using base::StringPrintf;
 
 namespace chromeos_update_engine {
 
@@ -943,7 +943,8 @@ bool DynamicPartitionControlAndroid::CheckSuperPartitionAllocatableSpace(
     }
     case SpaceLimit::ERROR_IF_EXCEEDED_SUPER: {
       if (sum_groups > full_space) {
-        LOG(ERROR) << base::StringPrintf(fmt, sum_groups, "", full_space);
+        LOG(ERROR) << android::base::StringPrintf(
+            fmt, sum_groups, "", full_space);
         return false;
       }
       break;

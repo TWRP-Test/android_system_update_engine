@@ -21,10 +21,10 @@
 #include <unistd.h>
 
 #include <android-base/file.h>
+#include <android-base/parseint.h>
 #include <base/files/file_enumerator.h>
 #include <base/files/file_util.h>
 #include <base/logging.h>
-#include <base/strings/string_number_conversions.h>
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
 
@@ -79,7 +79,7 @@ bool PrefsBase::GetInt64(const std::string_view key, int64_t* value) const {
                << ", got an empty value after trim";
     return false;
   }
-  if (!base::StringToInt64(str_value, value)) {
+  if (!android::base::ParseInt<int64_t>(str_value, value)) {
     LOG(ERROR) << "When reading pref " << key << ", failed to convert value "
                << str_value << " to integer";
     return false;
@@ -88,7 +88,7 @@ bool PrefsBase::GetInt64(const std::string_view key, int64_t* value) const {
 }
 
 bool PrefsBase::SetInt64(std::string_view key, const int64_t value) {
-  return SetString(key, base::NumberToString(value));
+  return SetString(key, std::format("{}", value));
 }
 
 bool PrefsBase::GetBoolean(std::string_view key, bool* value) const {

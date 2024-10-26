@@ -24,11 +24,11 @@
 #include <vector>
 
 #include <android-base/parsebool.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <base/bind.h>
 #include <base/logging.h>
-#include <base/strings/string_number_conversions.h>
 #include <brillo/data_encoding.h>
 #include <brillo/message_loops/message_loop.h>
 #include <brillo/strings/string_utils.h>
@@ -113,7 +113,7 @@ bool LogAndSetError(Error* error,
 
 bool GetHeaderAsBool(const string& header, bool default_value) {
   int value = 0;
-  if (base::StringToInt(header, &value) && (value == 0 || value == 1))
+  if (android::base::ParseInt(header, &value) && (value == 0 || value == 1))
     return value == 1;
   return default_value;
 }
@@ -274,8 +274,8 @@ bool UpdateAttempterAndroid::ApplyPayload(
   InstallPlan::Payload payload;
   payload.size = payload_size;
   if (!payload.size) {
-    if (!base::StringToUint64(headers[kPayloadPropertyFileSize],
-                              &payload.size)) {
+    if (!android::base::ParseUint<uint64_t>(headers[kPayloadPropertyFileSize],
+                                            &payload.size)) {
       payload.size = 0;
     }
   }
@@ -284,8 +284,8 @@ bool UpdateAttempterAndroid::ApplyPayload(
     LOG(WARNING) << "Unable to decode base64 file hash: "
                  << headers[kPayloadPropertyFileHash];
   }
-  if (!base::StringToUint64(headers[kPayloadPropertyMetadataSize],
-                            &payload.metadata_size)) {
+  if (!android::base::ParseUint<uint64_t>(headers[kPayloadPropertyMetadataSize],
+                                          &payload.metadata_size)) {
     payload.metadata_size = 0;
   }
   // The |payload.type| is not used anymore since minor_version 3.
@@ -340,8 +340,8 @@ bool UpdateAttempterAndroid::ApplyPayload(
 
   NetworkId network_id = kDefaultNetworkId;
   if (!headers[kPayloadPropertyNetworkId].empty()) {
-    if (!base::StringToUint64(headers[kPayloadPropertyNetworkId],
-                              &network_id)) {
+    if (!android::base::ParseUint<uint64_t>(headers[kPayloadPropertyNetworkId],
+                                            &network_id)) {
       return LogAndSetGenericError(
           error,
           __LINE__,

@@ -39,6 +39,7 @@
 #include <utility>
 #include <vector>
 
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <base/callback.h>
 #include <base/files/file_path.h>
@@ -52,7 +53,6 @@
 #include <base/strings/string_number_conversions.h>
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
-#include <base/strings/stringprintf.h>
 #include <brillo/data_encoding.h>
 
 #include "update_engine/common/constants.h"
@@ -892,34 +892,34 @@ string FormatTimeDelta(TimeDelta delta) {
   unsigned usecs = delta.InMicroseconds();
 
   if (days)
-    base::StringAppendF(&str, "%ud", days);
+    android::base::StringAppendF(&str, "%ud", days);
   if (days || hours)
-    base::StringAppendF(&str, "%uh", hours);
+    android::base::StringAppendF(&str, "%uh", hours);
   if (days || hours || mins)
-    base::StringAppendF(&str, "%um", mins);
-  base::StringAppendF(&str, "%u", secs);
+    android::base::StringAppendF(&str, "%um", mins);
+  android::base::StringAppendF(&str, "%u", secs);
   if (usecs) {
     int width = 6;
     while ((usecs / 10) * 10 == usecs) {
       usecs /= 10;
       width--;
     }
-    base::StringAppendF(&str, ".%0*u", width, usecs);
+    android::base::StringAppendF(&str, ".%0*u", width, usecs);
   }
-  base::StringAppendF(&str, "s");
+  android::base::StringAppendF(&str, "s");
   return str;
 }
 
 string ToString(const Time utc_time) {
   Time::Exploded exp_time{};
   utc_time.UTCExplode(&exp_time);
-  return base::StringPrintf("%d/%d/%d %d:%02d:%02d GMT",
-                            exp_time.month,
-                            exp_time.day_of_month,
-                            exp_time.year,
-                            exp_time.hour,
-                            exp_time.minute,
-                            exp_time.second);
+  return android::base::StringPrintf("%d/%d/%d %d:%02d:%02d GMT",
+                                     exp_time.month,
+                                     exp_time.day_of_month,
+                                     exp_time.year,
+                                     exp_time.hour,
+                                     exp_time.minute,
+                                     exp_time.second);
 }
 
 string ToString(bool b) {
@@ -1005,9 +1005,9 @@ string CalculateP2PFileId(const brillo::Blob& payload_hash,
                           size_t payload_size) {
   string encoded_hash = brillo::data_encoding::Base64Encode(
       brillo::data_encoding::Base64Encode(payload_hash));
-  return base::StringPrintf("cros_update_size_%" PRIuS "_hash_%s",
-                            payload_size,
-                            encoded_hash.c_str());
+  return android::base::StringPrintf("cros_update_size_%" PRIuS "_hash_%s",
+                                     payload_size,
+                                     encoded_hash.c_str());
 }
 
 bool ConvertToOmahaInstallDate(Time time, int* out_num_days) {
@@ -1204,7 +1204,7 @@ string GetTimeAsString(time_t utime) {
 }
 
 string GetExclusionName(const string& str_to_convert) {
-  return base::NumberToString(base::StringPieceHash()(str_to_convert));
+  return std::format("{}", base::StringPieceHash()(str_to_convert));
 }
 
 static bool ParseTimestamp(std::string_view str, int64_t* out) {
