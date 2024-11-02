@@ -26,8 +26,8 @@
 #include <base/files/file_util.h>
 #include <base/logging.h>
 #include <base/strings/string_split.h>
-#include <base/strings/string_util.h>
 
+#include "android-base/strings.h"
 #include "update_engine/common/utils.h"
 
 using std::string;
@@ -73,7 +73,7 @@ bool PrefsBase::GetInt64(const std::string_view key, int64_t* value) const {
   string str_value;
   if (!GetString(key, &str_value))
     return false;
-  base::TrimWhitespaceASCII(str_value, base::TRIM_ALL, &str_value);
+  str_value = android::base::Trim(str_value);
   if (str_value.empty()) {
     LOG(ERROR) << "When reading pref " << key
                << ", got an empty value after trim";
@@ -95,7 +95,7 @@ bool PrefsBase::GetBoolean(std::string_view key, bool* value) const {
   string str_value;
   if (!GetString(key, &str_value))
     return false;
-  base::TrimWhitespaceASCII(str_value, base::TRIM_ALL, &str_value);
+  str_value = android::base::Trim(str_value);
   if (str_value == "false") {
     *value = false;
     return true;
@@ -163,7 +163,7 @@ void PrefsBase::RemoveObserver(std::string_view key,
 }
 
 string PrefsInterface::CreateSubKey(const vector<string>& ns_and_key) {
-  return base::JoinString(ns_and_key, string(1, kKeySeparator));
+  return android::base::Join(ns_and_key, string(1, kKeySeparator));
 }
 
 // Prefs
@@ -326,7 +326,7 @@ bool Prefs::FileStorage::GetFileNameForKey(std::string_view key,
   // Allows only non-empty keys containing [A-Za-z0-9_-/].
   TEST_AND_RETURN_FALSE(!key.empty());
   for (char c : key)
-    TEST_AND_RETURN_FALSE(base::IsAsciiAlpha(c) || base::IsAsciiDigit(c) ||
+    TEST_AND_RETURN_FALSE(isalpha(c) || isdigit(c) ||
                           c == '_' || c == '-' || c == kKeySeparator);
   if (std::filesystem::exists(GetTemporaryDir())) {
     *filename =

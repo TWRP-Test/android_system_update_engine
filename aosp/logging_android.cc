@@ -32,7 +32,6 @@
 #include <android-base/unique_fd.h>
 #include <base/files/dir_reader_posix.h>
 #include <base/logging.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <log/log.h>
 

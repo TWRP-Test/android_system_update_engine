@@ -31,7 +31,6 @@
 #include <android-base/strings.h>
 #include <base/files/file_util.h>
 #include <base/logging.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <bootloader_message/bootloader_message.h>
 #include <fs_mgr.h>

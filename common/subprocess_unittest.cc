@@ -31,7 +31,6 @@
 #if BASE_VER < 780000  // Android
 #include <base/message_loop/message_loop.h>
 #endif  // BASE_VER < 780000
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #if BASE_VER >= 780000  // Chrome OS
 #include <base/task/single_thread_task_executor.h>

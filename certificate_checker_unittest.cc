@@ -18,7 +18,6 @@
 
 #include <string>
 
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

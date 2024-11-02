@@ -29,7 +29,6 @@
 #include <base/files/file_path.h>
 #include <base/files/file_util.h>
 #include <base/files/scoped_temp_dir.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <brillo/secure_blob.h>
 #include <gmock/gmock.h>

@@ -26,7 +26,6 @@
 #include <android-base/properties.h>
 #include <base/files/file_util.h>
 #include <base/strings/string_number_conversions.h>
-#include <base/strings/string_util.h>
 #include <bootloader_message/bootloader_message.h>
 #include <fstab/fstab.h>
 #include <libavb/libavb.h>
@@ -108,7 +107,7 @@ std::string CalculateVbmetaDigestForInactiveSlot() {
   const std::string encoded_digest =
       base::HexEncode(vbmeta_digest, AVB_SHA256_DIGEST_SIZE);
   LOG(INFO) << "vbmeta digest for target slot: " << encoded_digest;
-  return base::ToLowerASCII(encoded_digest);
+  return ToLower(encoded_digest);
 }
 
 }  // namespace

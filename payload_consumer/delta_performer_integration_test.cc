@@ -25,7 +25,6 @@
 
 #include <base/files/file_path.h>
 #include <base/files/file_util.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <gmock/gmock-matchers.h>
 #include <google/protobuf/repeated_field.h>
@@ -252,7 +251,8 @@ static void SignGeneratedShellPayloadWithKeys(
     signature_size_strings.push_back(
         android::base::StringPrintf("%zu", signature_size));
   }
-  string signature_size_string = base::JoinString(signature_size_strings, ":");
+  string signature_size_string =
+      android::base::Join(signature_size_strings, ":");
 
   ScopedTempFile hash_file("hash.XXXXXX"), metadata_hash_file("hash.XXXXXX");
   string delta_generator_path = GetBuildArtifactsPath("delta_generator");
@@ -289,9 +289,9 @@ static void SignGeneratedShellPayloadWithKeys(
                                             metadata_signature));
     metadata_sig_file_paths.push_back(metadata_sig_files.back().path());
   }
-  string sig_files_string = base::JoinString(sig_file_paths, ":");
+  string sig_files_string = android::base::Join(sig_file_paths, ":");
   string metadata_sig_files_string =
-      base::JoinString(metadata_sig_file_paths, ":");
+      android::base::Join(metadata_sig_file_paths, ":");
 
   // Add the signature to the payload.
   ASSERT_EQ(

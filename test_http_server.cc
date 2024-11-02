@@ -41,9 +41,9 @@
 #include <base/logging.h>
 #include <base/posix/eintr_wrapper.h>
 #include <base/strings/string_split.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 
+#include "android-base/strings.h"
 #include "update_engine/common/http_common.h"
 
 // HTTP end-of-line delimiter; sorry, this needs to be a macro.
@@ -86,7 +86,7 @@ bool ParseRequest(int fd, HttpRequest* request) {
       exit(RC_ERR_READ);
     }
     headers.append(buf, r);
-  } while (!base::EndsWith(headers, EOL EOL, base::CompareCase::SENSITIVE));
+  } while (!android::base::EndsWith(headers, EOL EOL));
 
   LOG(INFO) << "got headers:\n--8<------8<------8<------8<----\n"
             << headers << "\n--8<------8<------8<------8<----";
@@ -100,10 +100,7 @@ bool ParseRequest(int fd, HttpRequest* request) {
       base::SPLIT_WANT_ALL);
 
   // Decode URL line.
-  vector<string> terms = base::SplitString(lines[0],
-                                           base::kWhitespaceASCII,
-                                           base::KEEP_WHITESPACE,
-                                           base::SPLIT_WANT_NONEMPTY);
+  vector<string> terms = android::base::Tokenize(lines[0], " ");
   CHECK_EQ(terms.size(), static_cast<vector<string>::size_type>(3));
   CHECK_EQ(terms[0], "GET");
   request->url = terms[1];
@@ -112,16 +109,13 @@ bool ParseRequest(int fd, HttpRequest* request) {
   // Decode remaining lines.
   size_t i{};
   for (i = 1; i < lines.size(); i++) {
-    terms = base::SplitString(lines[i],
-                              base::kWhitespaceASCII,
-                              base::KEEP_WHITESPACE,
-                              base::SPLIT_WANT_NONEMPTY);
+    terms = android::base::Tokenize(lines[i], " ");
 
     if (terms[0] == "Range:") {
       CHECK_EQ(terms.size(), static_cast<vector<string>::size_type>(2));
       string& range = terms[1];
       LOG(INFO) << "range attribute: " << range;
-      CHECK(base::StartsWith(range, "bytes=", base::CompareCase::SENSITIVE) &&
+      CHECK(android::base::StartsWith(range, "bytes=") &&
             range.find('-') != string::npos);
       request->start_offset = atoll(range.c_str() + strlen("bytes="));
       // Decode end offset and increment it by one (so it is non-inclusive).
@@ -529,11 +523,10 @@ void HandleConnection(int fd) {
   LOG(INFO) << "pid(" << getpid() << "): handling url " << url;
   if (url == "/quitquitquit") {
     HandleQuit(fd);
-  } else if (base::StartsWith(
-                 url, "/download/", base::CompareCase::SENSITIVE)) {
+  } else if (android::base::StartsWith(url, "/download/")) {
     const UrlTerms terms(url, 2);
     HandleGet(fd, request, terms.GetSizeT(1));
-  } else if (base::StartsWith(url, "/flaky/", base::CompareCase::SENSITIVE)) {
+  } else if (android::base::StartsWith(url, "/flaky/")) {
     const UrlTerms terms(url, 5);
     HandleGet(fd,
               request,
@@ -545,8 +538,7 @@ void HandleConnection(int fd) {
     HandleRedirect(fd, request);
   } else if (url == "/error") {
     HandleError(fd, request);
-  } else if (base::StartsWith(
-                 url, "/error-if-offset/", base::CompareCase::SENSITIVE)) {
+  } else if (android::base::StartsWith(url, "/error-if-offset/")) {
     const UrlTerms terms(url, 3);
     HandleErrorIfOffset(fd, request, terms.GetSizeT(1), terms.GetInt(2));
   } else if (url == "/echo-headers") {

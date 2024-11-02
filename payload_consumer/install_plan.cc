@@ -22,7 +22,6 @@
 #include <base/format_macros.h>
 #include <base/logging.h>
 #include <base/strings/string_number_conversions.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 
 #include "update_engine/common/utils.h"
@@ -36,7 +35,7 @@ namespace chromeos_update_engine {
 namespace {
 string PayloadUrlsToString(
     const decltype(InstallPlan::Payload::payload_urls)& payload_urls) {
-  return "(" + base::JoinString(payload_urls, ",") + ")";
+  return "(" + android::base::Join(payload_urls, ",") + ")";
 }
 
 string VectorToString(const vector<std::pair<string, string>>& input,
@@ -46,9 +45,10 @@ string VectorToString(const vector<std::pair<string, string>>& input,
                  input.end(),
                  std::back_inserter(vec),
                  [](const auto& pair) {
-                   return base::JoinString({pair.first, pair.second}, ": ");
+                   return android::base::Join(vector{pair.first, pair.second},
+                                              ": ");
                  });
-  return base::JoinString(vec, separator);
+  return android::base::Join(vec, separator);
 }
 }  // namespace
 
@@ -81,8 +81,7 @@ void InstallPlan::Dump() const {
 
 string InstallPlan::ToString() const {
   string url_str = download_url;
-  if (base::StartsWith(
-          url_str, "fd://", base::CompareCase::INSENSITIVE_ASCII)) {
+  if (android::base::StartsWith(ToLower(url_str), "fd://")) {
     int fd = std::stoi(url_str.substr(strlen("fd://")));
     url_str = utils::GetFilePath(fd);
   }
@@ -145,7 +144,7 @@ string InstallPlan::ToString() const {
         "\n  "));
   }
 
-  return base::JoinString(result_str, "\n");
+  return android::base::Join(result_str, "\n");
 }
 
 bool InstallPlan::LoadPartitionsFromSlots(BootControlInterface* boot_control) {

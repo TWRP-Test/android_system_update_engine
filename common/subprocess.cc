@@ -30,7 +30,6 @@
 #include <base/bind.h>
 #include <base/logging.h>
 #include <base/posix/eintr_wrapper.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <brillo/secure_blob.h>
 
@@ -99,7 +98,7 @@ bool LaunchProcess(const vector<string>& cmd,
   proc->RedirectUsingPipe(STDOUT_FILENO, false);
   proc->SetPreExecCallback(base::Bind(&SetupChild, env, flags));
 
-  LOG(INFO) << "Running \"" << base::JoinString(cmd, " ") << "\"";
+  LOG(INFO) << "Running \"" << android::base::Join(cmd, " ") << "\"";
   return proc->Start();
 }
 

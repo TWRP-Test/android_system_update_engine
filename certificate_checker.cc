@@ -20,7 +20,6 @@
 
 #include <base/logging.h>
 #include <base/strings/string_number_conversions.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <curl/curl.h>
 #include <openssl/evp.h>

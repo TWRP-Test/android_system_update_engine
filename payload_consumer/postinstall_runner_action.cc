@@ -31,7 +31,6 @@
 #include <base/files/file_util.h>
 #include <base/logging.h>
 #include <base/strings/string_split.h>
-#include <base/strings/string_util.h>
 
 #include "update_engine/common/action_processor.h"
 #include "update_engine/common/boot_control_interface.h"

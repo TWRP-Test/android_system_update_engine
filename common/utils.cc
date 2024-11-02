@@ -52,7 +52,7 @@
 #include <base/rand_util.h>
 #include <base/strings/string_number_conversions.h>
 #include <base/strings/string_split.h>
-#include <base/strings/string_util.h>
+#include <android-base/stringprintf.h>
 #include <brillo/data_encoding.h>
 
 #include "update_engine/common/constants.h"
@@ -370,7 +370,7 @@ off_t BlockDevSize(int fd) {
 }
 
 off_t FileSize(int fd) {
-  struct stat stbuf{};
+  struct stat stbuf {};
   int rc = fstat(fd, &stbuf);
   CHECK_EQ(rc, 0);
   if (rc < 0) {
@@ -587,17 +587,17 @@ string MakePartitionName(const string& disk_name, int partition_num) {
 }
 
 bool FileExists(const char* path) {
-  struct stat stbuf{};
+  struct stat stbuf {};
   return 0 == lstat(path, &stbuf);
 }
 
 bool IsSymlink(const char* path) {
-  struct stat stbuf{};
+  struct stat stbuf {};
   return lstat(path, &stbuf) == 0 && S_ISLNK(stbuf.st_mode) != 0;
 }
 
 bool IsRegFile(const char* path) {
-  struct stat stbuf{};
+  struct stat stbuf {};
   return lstat(path, &stbuf) == 0 && S_ISREG(stbuf.st_mode) != 0;
 }
 
@@ -752,7 +752,8 @@ bool UnmountFilesystem(const string& mountpoint) {
 }
 
 bool IsMountpoint(const std::string& mountpoint) {
-  struct stat stdir{}, stparent{};
+  struct stat stdir {
+  }, stparent{};
 
   // Check whether the passed mountpoint is a directory and the /.. is in the
   // same device or not. If mountpoint/.. is in a different device it means that
@@ -1196,7 +1197,7 @@ string GetFilePath(int fd) {
 }
 
 string GetTimeAsString(time_t utime) {
-  struct tm tm{};
+  struct tm tm {};
   CHECK_EQ(localtime_r(&utime, &tm), &tm);
   char str[16];
   CHECK_EQ(strftime(str, sizeof(str), "%Y%m%d-%H%M%S", &tm), 15u);

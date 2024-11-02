@@ -29,7 +29,6 @@
 #include <base/location.h>
 #include <base/logging.h>
 #include <base/strings/string_split.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <base/threading/thread_task_runner_handle.h>
 
@@ -109,28 +108,24 @@ LibcurlHttpFetcher::~LibcurlHttpFetcher() {
   CleanUp();
 }
 
-bool LibcurlHttpFetcher::GetProxyType(const string& proxy,
+bool LibcurlHttpFetcher::GetProxyType(const string& proxy_str,
                                       curl_proxytype* out_type) {
-  if (base::StartsWith(
-          proxy, "socks5://", base::CompareCase::INSENSITIVE_ASCII) ||
-      base::StartsWith(
-          proxy, "socks://", base::CompareCase::INSENSITIVE_ASCII)) {
+  auto proxy = ToLower(proxy_str);
+  if (android::base::StartsWith(proxy, "socks5://") ||
+      android::base::StartsWith(proxy, "socks://")) {
     *out_type = CURLPROXY_SOCKS5_HOSTNAME;
     return true;
   }
-  if (base::StartsWith(
-          proxy, "socks4://", base::CompareCase::INSENSITIVE_ASCII)) {
+  if (android::base::StartsWith(proxy, "socks4://")) {
     *out_type = CURLPROXY_SOCKS4A;
     return true;
   }
-  if (base::StartsWith(
-          proxy, "http://", base::CompareCase::INSENSITIVE_ASCII) ||
-      base::StartsWith(
-          proxy, "https://", base::CompareCase::INSENSITIVE_ASCII)) {
+  if (android::base::StartsWith(proxy, "http://") ||
+      android::base::StartsWith(proxy, "https://")) {
     *out_type = CURLPROXY_HTTP;
     return true;
   }
-  if (base::StartsWith(proxy, kNoProxy, base::CompareCase::INSENSITIVE_ASCII)) {
+  if (android::base::StartsWith(proxy, kNoProxy)) {
     // known failure case. don't log.
     return false;
   }
@@ -259,15 +254,12 @@ void LibcurlHttpFetcher::ResumeTransfer(const string& url) {
   // Lock down the appropriate curl options for HTTP or HTTPS depending on
   // the url.
   if (hardware_->IsOfficialBuild()) {
-    if (base::StartsWith(
-            url_, "http://", base::CompareCase::INSENSITIVE_ASCII)) {
+    if (android::base::StartsWith(ToLower(url_), "http://")) {
       SetCurlOptionsForHttp();
-    } else if (base::StartsWith(
-                   url_, "https://", base::CompareCase::INSENSITIVE_ASCII)) {
+    } else if (android::base::StartsWith(ToLower(url_), "https://")) {
       SetCurlOptionsForHttps();
 #ifdef __ANDROID__
-    } else if (base::StartsWith(
-                   url_, "file://", base::CompareCase::INSENSITIVE_ASCII)) {
+    } else if (android::base::StartsWith(ToLower(url_), "file://")) {
       SetCurlOptionsForFile();
 #endif  // __ANDROID__
     } else {
@@ -379,7 +371,7 @@ void LibcurlHttpFetcher::SetHeader(const string& header_name,
     header_line = header_name + ":";
   TEST_AND_RETURN(header_line.find('\n') == string::npos);
   TEST_AND_RETURN(header_name.find(':') == string::npos);
-  extra_headers_[base::ToLowerASCII(header_name)] = header_line;
+  extra_headers_[ToLower(header_name)] = header_line;
 }
 
 // Inputs: header_name, header_value
@@ -397,7 +389,7 @@ bool LibcurlHttpFetcher::GetHeader(const string& header_name,
   // Initially clear |header_value| to handle both success and failures without
   // leaving |header_value| in a unclear state.
   header_value->clear();
-  auto header_key = base::ToLowerASCII(header_name);
+  auto header_key = ToLower(header_name);
   auto header_line_itr = extra_headers_.find(header_key);
   // If the |header_name| was never set, indicate so by returning false.
   if (header_line_itr == extra_headers_.end())
@@ -809,7 +801,7 @@ void LibcurlHttpFetcher::CleanUp() {
 
 void LibcurlHttpFetcher::GetHttpResponseCode() {
   long http_response_code = 0;  // NOLINT(runtime/int) - curl needs long.
-  if (base::StartsWith(url_, "file://", base::CompareCase::INSENSITIVE_ASCII)) {
+  if (android::base::StartsWith(ToLower(url_), "file://")) {
     // Fake out a valid response code for file:// URLs.
     http_response_code_ = 299;
   } else if (curl_easy_getinfo(curl_handle_,

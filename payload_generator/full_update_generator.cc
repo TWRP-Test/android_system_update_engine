@@ -24,7 +24,6 @@
 #include <memory>
 
 #include <base/format_macros.h>
-#include <base/strings/string_util.h>
 #include <android-base/stringprintf.h>
 #include <base/synchronization/lock.h>
 #include <base/threading/simple_thread.h>
