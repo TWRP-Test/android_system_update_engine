@@ -36,7 +36,7 @@ class XORExtentWriter : public BlockExtentWriter {
                   FileDescriptorPtr source_fd,
                   android::snapshot::ICowWriter* cow_writer,
                   const ExtentMap<const CowMergeOperation*>& xor_map,
-                  size_t partition_size)
+                  uint64_t partition_size)
       : src_extents_(op.src_extents()),
         source_fd_(source_fd),
         xor_map_(xor_map),
