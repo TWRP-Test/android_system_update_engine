@@ -1457,6 +1457,18 @@ void UpdateAttempterAndroid::ScheduleCleanupPreviousUpdate() {
   processor_->StartProcessing();
 }
 
+bool UpdateAttempterAndroid::TriggerPostinstall(const std::string& partition,
+                                                Error* error) {
+  if (error) {
+    return LogAndSetGenericError(
+        error,
+        __LINE__,
+        __FILE__,
+        __FUNCTION__ + std::string(" is not implemented"));
+  }
+  return false;
+}
+
 void UpdateAttempterAndroid::OnCleanupProgressUpdate(double progress) {
   for (auto&& callback : cleanup_previous_update_callbacks_) {
     callback->OnCleanupProgressUpdate(progress);
