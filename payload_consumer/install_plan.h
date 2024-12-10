@@ -182,9 +182,6 @@ struct InstallPlan {
   // False otherwise.
   bool run_post_install{true};
 
-  // True if this rollback should preserve some system data.
-  bool rollback_data_save_requested{false};
-
   // True if the update should write verity.
   // False otherwise.
   bool write_verity{true};

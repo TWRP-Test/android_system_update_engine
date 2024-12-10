@@ -198,7 +198,6 @@ void PostinstallRunnerActionTest::RunPostinstallAction(
   install_plan.partitions = {part};
   install_plan.download_url = "http://127.0.0.1:8080/update";
   install_plan.powerwash_required = powerwash_required;
-  install_plan.rollback_data_save_requested = save_rollback_data;
   RunPostinstallActionWithInstallPlan(install_plan);
 }
 

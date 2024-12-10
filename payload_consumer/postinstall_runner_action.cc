@@ -127,8 +127,7 @@ void PostinstallRunnerAction::PerformAction() {
   // that retains a small amount of system state such as enrollment and
   // network configuration. In both cases all user accounts are deleted.
   if (install_plan_.powerwash_required) {
-    if (hardware_->SchedulePowerwash(
-            install_plan_.rollback_data_save_requested)) {
+    if (hardware_->SchedulePowerwash()) {
       powerwash_scheduled_ = true;
     } else {
       return CompletePostinstall(ErrorCode::kPostinstallPowerwashError);

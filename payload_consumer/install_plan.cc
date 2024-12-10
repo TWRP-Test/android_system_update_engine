@@ -98,8 +98,6 @@ string InstallPlan::ToString() const {
           {"powerwash_required", utils::ToString(powerwash_required)},
           {"switch_slot_on_reboot", utils::ToString(switch_slot_on_reboot)},
           {"run_post_install", utils::ToString(run_post_install)},
-          {"rollback_data_save_requested",
-           utils::ToString(rollback_data_save_requested)},
           {"write_verity", utils::ToString(write_verity)},
       },
       "\n"));

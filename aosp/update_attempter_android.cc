@@ -506,10 +506,6 @@ bool UpdateAttempterAndroid::ResetStatus(Error* error) {
         "Status reset not allowed in this state, please "
         "cancel on going OTA first.");
   }
-  // last_error_ is used by setShouldSwitchSlot to determine if
-  // FilesystemVerification is done. Since we are discarding update
-  // state, discard this cache as well.
-  last_error_ = ErrorCode::kSuccess;
 
   if (apex_handler_android_ != nullptr) {
     LOG(INFO) << "Cleaning up reserved space for compressed APEX (if any)";
@@ -715,7 +711,6 @@ void UpdateAttempterAndroid::ProcessingDone(const ActionProcessor* processor,
   LOG(INFO) << "Processing Done.";
   metric_bytes_downloaded_.Flush(true);
   metric_total_bytes_downloaded_.Flush(true);
-  last_error_ = code;
   if (status_ == UpdateStatus::CLEANUP_PREVIOUS_UPDATE) {
     TerminateUpdateAndNotify(code);
     return;
@@ -1354,11 +1349,13 @@ bool UpdateAttempterAndroid::setShouldSwitchSlotOnReboot(
       std::make_unique<PostinstallRunnerAction>(boot_control_, hardware_);
   postinstall_runner_action->set_delegate(this);
 
-  // If last error code is kUpdatedButNotActive, we know that we reached this
-  // state by calling applyPayload() with switch_slot=false. That applyPayload()
-  // call would have already performed filesystem verification, therefore, we
+  // If |kPrefsPostInstallSucceeded| is set, we know that we reached this
+  // state by calling applyPayload() That applyPayload() call would have
+  // already performed filesystem verification, therefore, we
   // can safely skip the verification to save time.
-  if (last_error_ == ErrorCode::kUpdatedButNotActive) {
+  bool postinstall_succeeded = false;
+  if (prefs_->GetBoolean(kPrefsPostInstallSucceeded, &postinstall_succeeded) &&
+      postinstall_succeeded) {
     auto install_plan_action =
         std::make_unique<InstallPlanAction>(install_plan_);
     BondActions(install_plan_action.get(), postinstall_runner_action.get());

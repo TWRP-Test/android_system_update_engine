@@ -287,7 +287,6 @@ class UpdateAttempterAndroid final
 
   // The path to the zip file with X509 certificates.
   std::string update_certificates_path_{constants::kUpdateCertificatesPath};
-  ErrorCode last_error_{ErrorCode::kSuccess};
 
   metrics_utils::PersistedValue<int64_t> metric_bytes_downloaded_;
   metrics_utils::PersistedValue<int64_t> metric_total_bytes_downloaded_;
