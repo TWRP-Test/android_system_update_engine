@@ -482,6 +482,18 @@ bool UpdateAttempterAndroid::ResumeUpdate(Error* error) {
 }
 
 bool UpdateAttempterAndroid::CancelUpdate(Error* error) {
+  auto action = processor_->current_action();
+  if (action != nullptr &&
+      action->Type() == CleanupPreviousUpdateAction::StaticType()) {
+    return LogAndSetError(
+        error,
+        __LINE__,
+        __FILE__,
+        "CleanupPreviousUpdateAction is running, this action cannot be "
+        "canceled. As it often performs critical merge operations after "
+        "reboot.",
+        ErrorCode::kRollbackNotPossible);
+  }
   if (!processor_->IsRunning())
     return LogAndSetGenericError(
         error, __LINE__, __FILE__, "No ongoing update to cancel.");
