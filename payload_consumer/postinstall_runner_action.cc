@@ -108,16 +108,15 @@ void PostinstallRunnerAction::PerformAction() {
   auto dynamic_control = boot_control_->GetDynamicPartitionControl();
   CHECK(dynamic_control);
 
-  // Mount snapshot partitions for Virtual AB Compression Compression.
-  if (dynamic_control->UpdateUsesSnapshotCompression()) {
-    // If we are switching slots, then we are required to MapAllPartitions,
-    // as FinishUpdate() requires all partitions to be mapped.
-    // And switching slots requires FinishUpdate() to be called first
-    if (!install_plan_.partitions.empty() ||
-        install_plan_.switch_slot_on_reboot) {
-      if (!dynamic_control->MapAllPartitions()) {
-        return CompletePostinstall(ErrorCode::kPostInstallMountError);
-      }
+  // If we are switching slots, then we are required to MapAllPartitions,
+  // as FinishUpdate() requires all partitions to be mapped.
+  // And switching slots requires FinishUpdate() to be called first
+  if (!install_plan_.partitions.empty() ||
+      install_plan_.switch_slot_on_reboot) {
+    if (!dynamic_control->MapAllPartitions()) {
+      LOG(ERROR) << "Failed to map all partitions, this would cause "
+                    "FinishUpdate to fail. Abort early.";
+      return CompletePostinstall(ErrorCode::kPostInstallMountError);
     }
   }
 
@@ -324,10 +323,10 @@ void PostinstallRunnerAction::PerformPartitionPostinstall() {
 
 void PostinstallRunnerAction::OnProgressFdReady() {
   char buf[1024];
-  size_t bytes_read;
+  size_t bytes_read{};
   do {
     bytes_read = 0;
-    bool eof;
+    bool eof = false;
     bool ok =
         utils::ReadAll(progress_fd_, buf, std::size(buf), &bytes_read, &eof);
     progress_buffer_.append(buf, bytes_read);
