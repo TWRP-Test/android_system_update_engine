@@ -1363,7 +1363,6 @@ bool UpdateAttempterAndroid::setShouldSwitchSlotOnReboot(
   // previous ApplyPayload() call may have requested powerwash, these
   // settings would be saved in `this->install_plan_`. Inherit that setting.
   install_plan_.powerwash_required = this->install_plan_.powerwash_required;
-  install_plan_.switch_slot_on_reboot = true;
 
   CHECK_NE(install_plan_.source_slot, UINT32_MAX);
   CHECK_NE(install_plan_.target_slot, UINT32_MAX);
