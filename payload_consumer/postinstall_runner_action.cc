@@ -111,12 +111,17 @@ void PostinstallRunnerAction::PerformAction() {
   // If we are switching slots, then we are required to MapAllPartitions,
   // as FinishUpdate() requires all partitions to be mapped.
   // And switching slots requires FinishUpdate() to be called first
-  if (!install_plan_.partitions.empty() ||
-      install_plan_.switch_slot_on_reboot) {
-    if (!dynamic_control->MapAllPartitions()) {
-      LOG(ERROR) << "Failed to map all partitions, this would cause "
-                    "FinishUpdate to fail. Abort early.";
-      return CompletePostinstall(ErrorCode::kPostInstallMountError);
+  if (dynamic_control->GetVirtualAbFeatureFlag().IsEnabled()) {
+    // If we are switching slots, then we are required to MapAllPartitions,
+    // as FinishUpdate() requires all partitions to be mapped.
+    // And switching slots requires FinishUpdate() to be called first
+    if (!install_plan_.partitions.empty() ||
+        install_plan_.switch_slot_on_reboot) {
+      if (!dynamic_control->MapAllPartitions()) {
+        LOG(ERROR) << "Failed to map all partitions, this would cause "
+                      "FinishUpdate to fail. Abort early.";
+        return CompletePostinstall(ErrorCode::kPostInstallMountError);
+      }
     }
   }
 
