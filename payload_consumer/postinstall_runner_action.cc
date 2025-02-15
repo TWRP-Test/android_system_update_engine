@@ -35,6 +35,7 @@
 #include "update_engine/common/action_processor.h"
 #include "update_engine/common/boot_control_interface.h"
 #include "update_engine/common/error_code_utils.h"
+#include "update_engine/common/platform_constants.h"
 #include "update_engine/common/subprocess.h"
 #include "update_engine/common/utils.h"
 
@@ -108,14 +109,17 @@ void PostinstallRunnerAction::PerformAction() {
   auto dynamic_control = boot_control_->GetDynamicPartitionControl();
   CHECK(dynamic_control);
 
-  // Mount snapshot partitions for Virtual AB Compression Compression.
-  if (dynamic_control->UpdateUsesSnapshotCompression()) {
-    // If we are switching slots, then we are required to MapAllPartitions,
-    // as FinishUpdate() requires all partitions to be mapped.
-    // And switching slots requires FinishUpdate() to be called first
+  // Mount snapshot partitions for Virtual AB updates.
+  // If we are switching slots, then we are required to MapAllPartitions,
+  // as FinishUpdate() requires all partitions to be mapped.
+  // And switching slots requires FinishUpdate() to be called first
+  if (dynamic_control->GetVirtualAbFeatureFlag().IsEnabled() &&
+      !constants::kIsRecovery) {
     if (!install_plan_.partitions.empty() ||
         install_plan_.switch_slot_on_reboot) {
       if (!dynamic_control->MapAllPartitions()) {
+        LOG(ERROR) << "Failed to map all partitions, this would cause "
+                      "FinishUpdate to fail. Abort early.";
         return CompletePostinstall(ErrorCode::kPostInstallMountError);
       }
     }
