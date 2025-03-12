@@ -1531,6 +1531,12 @@ std::optional<base::FilePath> DynamicPartitionControlAndroid::GetSuperDevice() {
 }
 
 bool DynamicPartitionControlAndroid::MapAllPartitions() {
+  // This flag tells us if VAB is enabled. In the case it's not (e.g. for
+  // secondary payloads) we are falling back on A/B and MapAllPartitions should
+  // just be a no-op
+  if (!target_supports_snapshot_) {
+    return true;
+  }
   return snapshot_->MapAllSnapshots(kMapSnapshotTimeout);
 }
 
