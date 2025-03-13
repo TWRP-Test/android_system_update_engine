@@ -875,6 +875,8 @@ void UpdateAttempterAndroid::TerminateUpdateAndNotify(ErrorCode error_code) {
     return;
   }
 
+  boot_control_->GetDynamicPartitionControl()->Cleanup();
+
   if (status_ == UpdateStatus::CLEANUP_PREVIOUS_UPDATE) {
     ClearUpdateCompletedMarker();
     LOG(INFO) << "Terminating cleanup previous update.";
@@ -883,8 +885,6 @@ void UpdateAttempterAndroid::TerminateUpdateAndNotify(ErrorCode error_code) {
       observer->SendPayloadApplicationComplete(error_code);
     return;
   }
-
-  boot_control_->GetDynamicPartitionControl()->Cleanup();
 
   for (auto observer : daemon_state_->service_observers())
     observer->SendPayloadApplicationComplete(error_code);
