@@ -219,8 +219,8 @@ bool DynamicPartitionControlAndroid::MapPartitionInternal(
       .device_name = device_name};
   bool success = false;
   if (GetVirtualAbFeatureFlag().IsEnabled() && target_supports_snapshot_ &&
-      slot != source_slot_ && force_writable && ExpectMetadataMounted() && 
-      access(path->c_str(), F_OK) == 0) {
+      slot != source_slot_ && force_writable && ExpectMetadataMounted() &&
+      !recovery_fallback_to_direct_update_) {
     // Only target partitions are mapped with force_writable. On Virtual
     // A/B devices, target partitions may overlap with source partitions, so
     // they must be mapped with snapshot.
@@ -588,6 +588,8 @@ bool DynamicPartitionControlAndroid::PreparePartitionsForUpdate(
       LOG(INFO) << "Skip canceling previous update because metadata is not "
                 << "mounted";
     }
+
+    recovery_fallback_to_direct_update_ = true;
   }
 
   // TODO(xunchang) support partial update on non VAB enabled devices.

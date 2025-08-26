@@ -350,6 +350,7 @@ class DynamicPartitionControlAndroid : public DynamicPartitionControlInterface {
   std::unique_ptr<android::snapshot::ISnapshotManager> snapshot_;
   std::unique_ptr<android::snapshot::AutoDevice> metadata_device_;
   bool target_supports_snapshot_ = false;
+  bool recovery_fallback_to_direct_update_ = false;
   // Whether the target partitions should be loaded as dynamic partitions. Set
   // by PreparePartitionsForUpdate() per each update.
   bool is_target_dynamic_ = false;
