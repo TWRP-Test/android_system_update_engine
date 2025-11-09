@@ -1501,8 +1501,8 @@ bool DeltaPerformer::CheckpointUpdateProgress(bool force) {
     return false;
   }
   Terminator::set_exit_blocked(true);
-  LOG_IF(WARNING, !prefs_->StartTransaction())
-      << "unable to start transaction in checkpointing";
+  //LOG_IF(WARNING, !prefs_->StartTransaction())
+  //    << "unable to start transaction in checkpointing";
   DEFER {
     prefs_->CancelTransaction();
   };
@@ -1559,7 +1559,7 @@ bool DeltaPerformer::CheckpointUpdateProgress(bool force) {
   TEST_AND_RETURN_FALSE(
       prefs_->SetInt64(kPrefsUpdateStateNextOperation, next_operation_num_));
   if (!prefs_->SubmitTransaction()) {
-    LOG(ERROR) << "Failed to submit transaction in checkpointing";
+    //LOG(ERROR) << "Failed to submit transaction in checkpointing";
   }
   return true;
 }
