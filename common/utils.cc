@@ -724,6 +724,19 @@ bool MountFilesystem(const string& device,
                   << mountpoint << " as " << fstype;
   }
   if (!type.empty()) {
+    PLOG(WARNING) << "Try to mount destination device " << device << " on "
+                  << mountpoint << " as erofs";
+
+    int rc = mount(device.c_str(),
+                   mountpoint.c_str(),
+                   "erofs",
+                   mountflags,
+                   fs_mount_options.c_str());
+    if (rc == 0) {
+      PLOG(WARNING) << "mount again with erofs success: " << device;
+      return true;
+    }
+
     LOG(ERROR) << "Unable to mount " << device << " with any supported type";
   }
   return false;
