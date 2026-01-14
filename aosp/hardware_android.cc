@@ -89,6 +89,9 @@ std::string CalculateVbmetaDigestForInactiveSlot() {
   auto suffix = fs_mgr_get_other_slot_suffix();
   const char* requested_partitions[] = {nullptr};
   auto avb_ops = avb_ops_user_new();
+  DEFER {
+    avb_ops_user_free(avb_ops);
+  };
   auto verify_result = avb_slot_verify(avb_ops,
                                        requested_partitions,
                                        suffix.c_str(),
