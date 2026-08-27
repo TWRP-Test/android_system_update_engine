@@ -429,11 +429,12 @@ bool DeltaPerformer::CheckSPLDowngrade() {
                     "will reject this OTA.";
       return false;
     }
-    install_plan_->powerwash_required = true;
+    install_plan_->powerwash_required = false;
     LOG(WARNING)
         << "Target build SPL " << new_spl
         << " is older than current build's SPL " << current_spl
-        << ", this OTA is an SPL downgrade. Data wipe will be required";
+        << ", this OTA is an SPL downgrade. But we will not wipe data"
+        << ", please wipe by manual after finish update.";
   }
   return true;
 }
