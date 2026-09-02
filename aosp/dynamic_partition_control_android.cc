@@ -1116,16 +1116,13 @@ bool DynamicPartitionControlAndroid::UpdatePartitionMetadata(
       uint64_t partition_size = partition_sizes_it->second;
 
       auto partition_name_suffix = partition_name + target_suffix;
-      Partition* p = builder->FindPartition(partition_name_suffix);
+      Partition* p = builder->AddPartition(
+          partition_name_suffix, group_name_suffix, LP_PARTITION_ATTR_READONLY);
       if (!p) {
-        p = builder->AddPartition(partition_name_suffix, group_name_suffix, LP_PARTITION_ATTR_READONLY);
-        if (!p) {
-          LOG(ERROR) << "Cannot add partition " << partition_name_suffix
-                     << " to group " << group_name_suffix;
-          return false;
-        }
+        LOG(ERROR) << "Cannot add partition " << partition_name_suffix
+                   << " to group " << group_name_suffix;
+        return false;
       }
-
       if (!builder->ResizePartition(p, partition_size)) {
         LOG(ERROR) << "Cannot resize partition " << partition_name_suffix
                    << " to size " << partition_size << ". Not enough space?";
