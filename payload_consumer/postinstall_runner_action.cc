@@ -464,16 +464,10 @@ void PostinstallRunnerAction::CompletePostinstall(ErrorCode error_code) {
   };
   if (error_code == ErrorCode::kSuccess) {
     if (install_plan_.switch_slot_on_reboot) {
-      //if (!boot_control_->GetDynamicPartitionControl()->FinishUpdate(
-      //        install_plan_.powerwash_required) ||
-      //    !boot_control_->SetActiveBootSlot(install_plan_.target_slot)) {
-      //  error_code = ErrorCode::kPostinstallRunnerError;
-      auto a = !boot_control_->GetDynamicPartitionControl()->FinishUpdate(install_plan_.powerwash_required);
-	  if (a) LOG(ERROR) << "Postinstall action failed msg=FinishUpdate";
-      auto b = !boot_control_->SetActiveBootSlot(install_plan_.target_slot);
-      if (b) LOG(ERROR) << "Postinstall action failed msg=SetActiveBootSlot";
-      if (a || b) {
-      	error_code = ErrorCode::kPostinstallRunnerError;
+      if (!boot_control_->GetDynamicPartitionControl()->FinishUpdate(
+              install_plan_.powerwash_required) ||
+          !boot_control_->SetActiveBootSlot(install_plan_.target_slot)) {
+        error_code = ErrorCode::kPostinstallRunnerError;
       } else {
         // Schedules warm reset on next reboot, ignores the error.
         hardware_->SetWarmReset(true);
